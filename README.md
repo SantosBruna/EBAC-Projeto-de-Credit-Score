@@ -2,7 +2,7 @@
 
 ## 📌 Sobre o Projeto
 
-Projeto desenvolvido no **Módulo 17 – Profissão Cientista de Dados**, focado no pré-processamento e análise exploratória de dados para desenvolvimento de um modelo de Credit Score.
+Projeto desenvolvido no **Profissão Cientista de Dados**, focado no pré-processamento, análise exploratória e modelagem preditiva para desenvolvimento de um modelo de Credit Score.
 
 O termo "credit score" se refere a uma pontuação numérica que representa a credibilidade de um indivíduo em termos de cumprimento de obrigações financeiras, como pagamento de empréstimos e cartões de crédito. Esta pontuação é calculada com base em diversas informações financeiras e de crédito do indivíduo.
 
@@ -19,6 +19,7 @@ O **objetivo principal** deste projeto é prever o risco de um indivíduo se tor
 * Tratar variáveis categóricas
 * Realizar balanceamento de classes
 * Preparar a base para desenvolvimento de modelo de Machine Learning
+* Aplicar e avaliar o algoritmo Naive Bayes para classificação multiclasse
 
 ---
 
@@ -26,7 +27,8 @@ O **objetivo principal** deste projeto é prever o risco de um indivíduo se tor
 
 ```
 ├── notebooks/
-│   └── Profissao_Cientista_de_Dados_M17_Projeto.ipynb
+│   ├── Profissao_Cientista_de_Dados_M17_Projeto.ipynb
+│   └── Profissao_Cientista_de_Dados_M20_Pratique.ipynb
 ├── data/
 │   └── CREDIT_SCORE_PROJETO_PARTE1.csv
 ├── outputs/
@@ -46,7 +48,7 @@ O **objetivo principal** deste projeto é prever o risco de um indivíduo se tor
 * **Matplotlib** - Visualização de dados
 * **Seaborn** - Visualizações estatísticas avançadas
 * **Plotly Express** - Gráficos interativos
-* **Scikit-learn** - Divisão de dados e pré-processamento
+* **Scikit-learn** - Divisão de dados, pré-processamento e métricas de avaliação
 * **Imbalanced-learn (SMOTE)** - Balanceamento de classes
 * **NumPy** - Operações numéricas
 * **Jupyter Notebook** - Ambiente de desenvolvimento
@@ -72,7 +74,7 @@ O dataset contém informações de clientes bancários com as seguintes variáve
 
 ## 📈 Análises Realizadas
 
-### **Etapa 1: Pré-processamento dos Dados**
+### **Módulo 17 — Pré-processamento e Análise Exploratória**
 
 #### ✅ Verificação e Ajuste de Tipos de Dados
 - Conversão de variáveis categóricas para tipo `string`
@@ -92,8 +94,6 @@ O dataset contém informações de clientes bancários com as seguintes variáve
 - **Resultado**: Não foram encontrados erros de digitação ou valores inconsistentes
 
 ---
-
-### **Etapa 2: Análise Exploratória de Dados (EDA)**
 
 #### 📊 Análise Univariada - Variáveis Numéricas
 
@@ -118,7 +118,6 @@ O dataset contém informações de clientes bancários com as seguintes variáve
 
 **Education:**
 - ✅ **Balanceado**: Distribuição equilibrada entre os níveis de escolaridade
-- Associate's Degree ligeiramente menor que Bachelor's Degree, mas sem desbalanceamento significativo
 
 **Marital Status:**
 - ✅ **Balanceado**: Valores próximos entre solteiros e casados
@@ -127,152 +126,70 @@ O dataset contém informações de clientes bancários com as seguintes variáve
 - ⚠️ **Desbalanceado**: "Owned" possui o dobro de registros em relação a "Rented"
 
 **Credit Score (variável alvo):**
-- ⚠️ **Fortemente desbalanceado**: 
-  - Predominância da classe Medium
-  - Classe Low com poucos registros
-  - Classe High com quantidade intermediária
-- ⚠️ Atenção à possível multicolinearidade
+- ⚠️ **Fortemente desbalanceado**: predominância da classe Medium, classe Low com poucos registros
 
 #### 📊 Análise Bivariada
 
 **Principais relações identificadas:**
 
-1. **Age vs Credit Score:**
-   - Média de 41 anos → High Score
-   - Média de 31 anos → Medium Score
-   - Média de 28 anos → Low Score
-   - Correlação positiva fraca (0.17)
-
-2. **Income vs Credit Score:**
-   - ⭐ **Relação mais forte identificada**
-   - Quanto maior o salário, maior o score
-   - Faz sentido: maior capacidade de pagamento
-
-3. **Gender vs Credit Score:**
-   - Não foram encontrados homens com Low Score
-   - Indica possível desbalanceamento que requer atenção
-
-4. **Education vs Credit Score:**
-   - Bachelor's Degree, Master's Degree e Doctorate não possuem os três tipos de score
-   - Níveis mais altos de escolaridade associados a scores mais elevados
-
-5. **Age vs Marital Status:**
-   - Existe relação entre idade e estado civil
-   - Pessoas mais velhas tendem a ser casadas
-
-6. **Home Ownership vs Credit Score:**
-   - Clientes com casa própria tendem a ter scores mais altos
-
-**Perguntas adicionais exploradas:**
-1. Qual variável tem mais forte associação com o credit score? → **Income**
-2. O estado civil influencia no score? → **Correlação indireta via escolaridade**
-3. Existe diferença no score entre homens e mulheres? → **Sim, ausência de homens no Low Score**
+1. **Age vs Credit Score**: correlação positiva fraca (0.17); scores mais altos associados a idades maiores
+2. **Income vs Credit Score**: ⭐ relação mais forte — maior salário, maior score
+3. **Gender vs Credit Score**: ausência de homens com Low Score, indicando possível viés
+4. **Education vs Credit Score**: níveis mais altos de escolaridade associados a scores melhores
+5. **Home Ownership vs Credit Score**: proprietários tendem a ter scores mais altos
 
 ---
-
-### **Etapa 3: Correlação, Codificação e Preparação dos Dados**
-
-#### 📈 Análise de Correlação (Variáveis Numéricas)
-
-**Antes do tratamento de categóricas:**
-- Age vs Income: **0.63** (correlação positiva moderada-forte)
-  - Faz sentido: mais idade → mais experiência → maiores salários
-
-**Depois do tratamento de categóricas:**
-- Age vs Income: **0.63** (mantida)
-- Education vs Number of Children: **0.14**
-- Age vs Credit Score: **0.17**
 
 #### 🔄 Tratamento de Variáveis Categóricas
 
 **Label Encoding (variáveis ordinais):**
-- **Education**: Mapeamento ordinal de 1 a 5
-  - High School Diploma: 1
-  - Associate's Degree: 2
-  - Bachelor's Degree: 3
-  - Master's Degree: 4
-  - Doctorate: 5
+- **Education**: Mapeamento ordinal de 1 a 5 (High School → Doctorate)
 
 **One-Hot Encoding (variáveis nominais):**
-- Gender → Gender_Female, Gender_Male
-- Marital Status → Marital Status_Married, Marital Status_Single
-- Home Ownership → Home Ownership_Owned, Home Ownership_Rented
+- Gender, Marital Status, Home Ownership
 
 **Variável Alvo:**
 - Credit Score codificado com LabelEncoder (0, 1, 2)
 
-#### ✂️ Divisão dos Dados
+#### ✂️ Divisão e Balanceamento dos Dados
 
-**Proporção:** 75% treino / 25% teste (random_state=42)
+- **Proporção treino/teste**: 75% / 25% (random_state=42)
+- **Balanceamento**: SMOTE aplicado apenas nos dados de treino para corrigir o desbalanceamento crítico das classes
 
-**Dimensões resultantes:**
-- X_train: 75% dos dados
-- X_test: 25% dos dados
-- y_train: 75% dos rótulos
-- y_test: 25% dos rótulos
+---
 
-#### ⚖️ Balanceamento de Classes (SMOTE)
+### **Módulo 20 — Modelagem com Naive Bayes**
 
-**Problema identificado:**
-- Classe predominante (Medium) com muito mais registros
-- Classes minoritárias (Low e High) sub-representadas
-- Risco de viés no modelo
+#### 🤖 Aplicação do Algoritmo
 
-**Solução aplicada:**
-- Técnica SMOTE (Synthetic Minority Over-sampling Technique)
-- Aplicada APENAS nos dados de treino
-- Todas as classes balanceadas para mesma quantidade de amostras
+Nesta etapa foi aplicado o algoritmo **Gaussian Naive Bayes** (`GaussianNB`) às bases de treino e teste preparadas no Módulo 17. O Naive Bayes é um classificador probabilístico que assume independência entre as variáveis e seleciona a classe com maior probabilidade como previsão final — sendo adequado tanto para classificação binária quanto para **múltiplas classes**, como é o caso do Credit Score (Low, Medium, High).
 
-**Resultado:**
-- Distribuição uniforme das três classes no conjunto de treino
-- Dados de teste mantidos sem alteração (representam distribuição real)
+#### 📏 Métricas de Avaliação
+
+As métricas utilizadas foram **acurácia**, **recall** (com `average='macro'` para tratamento multiclasse) e **matriz de confusão** visualizada com Plotly.
+
+**Desempenho na base de treino:**
+- O modelo apresentou alto desempenho, com acurácia e recall em proporções similares
+- A matriz de confusão revelou apenas três classificações incorretas, com a grande maioria dos registros avaliados corretamente
+
+**Desempenho na base de teste:**
+- O modelo atingiu **100% de acurácia e recall** na base de teste
+- A matriz de confusão não apresentou nenhum registro classificado erroneamente
+- O resultado é coerente com o excelente desempenho já observado no treino (~98%)
+
+#### 💬 Conclusão da Etapa
+
+O algoritmo Naive Bayes se adequou muito bem ao conjunto de dados, mesmo considerando a correlação moderada identificada entre as variáveis (Age vs Income: 0.63). O pressuposto de independência entre variáveis, central no Naive Bayes, não comprometeu a capacidade preditiva do modelo, que conseguiu prever o score de crédito com alta precisão através da abordagem probabilística.
 
 ---
 
 ## 🔍 Principais Insights
 
-### 💡 Sobre os Dados
-
-1. **Qualidade dos dados**: Boa qualidade geral, com apenas 34 valores faltantes em 1 variável
-2. **Ausência de outliers**: Nenhum outlier significativo detectado nas variáveis numéricas
-3. **Desbalanceamentos identificados**:
-   - Home Ownership (Owned 2x mais que Rented)
-   - Credit Score (forte desbalanceamento na variável alvo)
-
-### 💡 Sobre Relações entre Variáveis
-
-1. **Income é a variável mais preditiva**: Forte relação com Credit Score
-2. **Idade influencia moderadamente**: Através de correlação com salário (0.63)
-3. **Educação importa**: Níveis mais altos associados a melhores scores
-4. **Gênero apresenta viés**: Ausência de homens na classe Low Score
-5. **Casa própria é indicador positivo**: Associação com scores mais altos
-
-### 💡 Sobre Preparação para Modelagem
-
-1. **Tratamento de categóricas bem-sucedido**: Encoding apropriado para cada tipo
-2. **Balanceamento necessário e aplicado**: SMOTE resolveu o desbalanceamento crítico
-3. **Dados prontos para ML**: Base limpa, processada e dividida adequadamente
-
----
-
-## 📌 Conclusão
-
-Este projeto completou com sucesso a **primeira etapa do desenvolvimento de um modelo de Credit Score**, realizando um pré-processamento robusto e uma análise exploratória completa dos dados.
-
-### ✅ Conquistas do Projeto:
-
-1. **Dados limpos e consistentes**: Tratamento eficaz de valores faltantes sem distorcer distribuições
-2. **Insights valiosos**: Identificação de variáveis-chave (Income, Education, Age) para predição
-3. **Codificação apropriada**: Tratamento correto de variáveis categóricas nominais e ordinais
-4. **Balanceamento efetivo**: Aplicação de SMOTE para resolver desbalanceamento crítico
-5. **Base preparada para ML**: Dados de treino e teste prontos para modelagem
-
-### 🎯 Próximos Passos:
-
-- Desenvolvimento e treinamento de modelos de classificação
-- Avaliação de performance com métricas apropriadas (considerando classes balanceadas)
-
-A base está **sólida e pronta** para a construção de um modelo preditivo de Credit Score confiável e eficaz.
+1. **Income** é a variável mais preditiva do Credit Score
+2. **Idade** influencia moderadamente, sobretudo via correlação com salário
+3. **Educação** e **posse de imóvel** são indicadores positivos do score
+4. **Gênero** apresentou viés (ausência de homens na classe Low Score)
+5. O modelo Naive Bayes demonstrou excelente desempenho mesmo com variáveis correlacionadas
 
 ---
 
@@ -284,7 +201,6 @@ A base está **sólida e pronta** para a construção de um modelo preditivo de 
 * 📧 Email: brunasrsantos@gmail.com
 
 ---
-
 ## 📝 Licença
 
 Este projeto está licenciado sob a **MIT License**.
