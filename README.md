@@ -173,7 +173,7 @@ As métricas utilizadas foram **acurácia**, **recall** (com `average='macro'` p
 - A matriz de confusão revelou apenas três classificações incorretas, com a grande maioria dos registros avaliados corretamente
 
 **Desempenho na base de teste:**
-- O modelo atingiu **100% de acurácia e recall** na base de teste
+- O modelo atingiu **100% de acurácia e recall** na base de teste, medida que também se deve ao tamanho da base, que era pequena
 - A matriz de confusão não apresentou nenhum registro classificado erroneamente
 - O resultado é coerente com o excelente desempenho já observado no treino (~98%)
 
